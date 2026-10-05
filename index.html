@@ -241,7 +241,73 @@
             0%, 100% { transform: translateY(0) scale(1.1); }
             50% { transform: translateY(-10px) scale(1.1); }
         }
+            /* Node Number & Word Reveal Display */
+        .game-node {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
 
+        .node-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .node-word {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .timer-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: #ff4d4d;
+            color: #fff;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+            animation: pulse 1s infinite alternate;
+        }
+
+        .check-btn {
+            background: #4dff4d;
+            color: #000;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(77, 255, 77, 0.6);
+        }
+
+        .check-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Wrong State Formatting */
+        .game-node.wrong {
+            border: 2px solid #ff4d4d !important;
+            background: rgba(255, 77, 77, 0.25) !important;
+            box-shadow: 0 0 15px #ff4d4d !important;
+            color: #ff4d4d;
+        }
+
+        .status-wrong {
+            color: #ff4d4d;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -359,19 +425,27 @@
             </div>
         </div>
 
-        <!-- CHALLENGE MODAL -->
+       <!-- CHALLENGE MODAL -->
         <div id="challengeModal" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
             <div class="glass-panel p-10 max-w-2xl w-full text-center animate-[bounceIn_0.5s_ease-out]">
-                <h3 class="text-2xl font-bold text-gray-300 mb-2 tracking-widest uppercase">Vocabulary Challenge</h3>
-                <div id="challengeWord" class="text-6xl font-bold text-white mb-12 mt-6 drop-shadow-lg break-words">
+                <!-- 5 Second Timer Display -->
+                <div id="modalTimer" class="text-4xl font-bold text-yellow-300 mb-2 animate-pulse">⏱️ 5s</div>
+                
+                <h3 class="text-xl font-bold text-gray-300 mb-2 tracking-widest uppercase">Vocabulary Challenge</h3>
+                
+                <!-- Big Vocabulary Word -->
+                <div id="challengeWord" class="text-6xl font-bold text-white mb-10 mt-4 drop-shadow-lg break-words">
                     Word Here
                 </div>
+                
                 <div class="flex justify-center gap-8">
-                    <button onclick="resolveChallenge(false)" class="w-24 h-24 rounded-full bg-red-500 hover:bg-red-400 border-4 border-red-700 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)] transition-transform hover:scale-110 active:scale-95">
-                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <!-- Wrong / Fail Button -->
+                    <button onclick="resolveChallenge(false)" class="w-20 h-20 rounded-full bg-red-500 hover:bg-red-400 border-4 border-red-700 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)] transition-transform hover:scale-110 active:scale-95">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
-                    <button onclick="resolveChallenge(true)" class="w-24 h-24 rounded-full bg-green-500 hover:bg-green-400 border-4 border-green-700 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-transform hover:scale-110 active:scale-95">
-                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                    <!-- Check / Correct Button -->
+                    <button onclick="resolveChallenge(true)" class="w-20 h-20 rounded-full bg-green-500 hover:bg-green-400 border-4 border-green-700 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-transform hover:scale-110 active:scale-95">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
                     </button>
                 </div>
             </div>
@@ -746,7 +820,7 @@
             }
         }
 
-        function renderBoardUI() {
+function renderBoardUI() {
             const grid = document.getElementById('boardGrid');
             grid.innerHTML = '';
             
@@ -757,7 +831,6 @@
                 startZone.setAttribute('data-team', r);
                 startZone.id = `start-${r}`;
                 
-                // Show team name if active in this lane (initially)
                 if (state.teams[r].active) {
                     startZone.innerText = state.teams[r].name;
                 } else {
@@ -772,12 +845,22 @@
                     const node = document.createElement('div');
                     node.className = "game-node";
                     node.id = `node-${r}-${c}`;
-                    node.innerHTML = `<span class="node-word font-bold text-xl">${nodeData.word}</span>`;
+                    
+                    // Displays numbers 1, 2, 3, 4 per column
+                    const nodeNumber = r + 1;
+
+                    if (nodeData.owner !== null) {
+                        node.classList.add(`claimed-${nodeData.owner + 1}`);
+                        node.innerHTML = `<span class="node-word font-bold text-xl">${nodeData.word}</span>`;
+                    } else {
+                        node.innerHTML = `<span class="text-3xl font-bold text-white">${nodeNumber}</span>`;
+                    }
+
                     node.onclick = () => handleNodeClick(r, c);
                     grid.appendChild(node);
                 }
 
-                // 3. Final Planet Area (Only added on first row, spans 4 rows)
+                // 3. Final Planet Area
                 if (r === 0) {
                     const planet = document.createElement('div');
                     planet.className = "final-planet-container text-2xl font-bold text-black text-center";
@@ -788,62 +871,133 @@
             }
         }
 
-        function createUFOs() {
-            const layer = document.getElementById('ufoLayer');
-            layer.innerHTML = '';
-            
-            state.teams.forEach(team => {
-                if (!team.active) return;
-                const ufo = document.createElement('div');
-                ufo.className = `ufo ${teamGlowClasses[team.id]}`;
-                ufo.id = `ufo-${team.id}`;
+      // Handles clicking a node: reveals word + starts 5s timer
+            function handleNodeClick(r, c) {
+                const nodeData = state.board[r][c];
+                const el = document.getElementById(`node-${r}-${c}`);
                 
-                if (team.icon) {
-                    ufo.innerHTML = `<img src="${team.icon}" alt="${team.name}">`;
-                } else {
-                    ufo.innerHTML = getSVGIcon(team.color);
+                if (nodeData.checked || nodeData.isWrong) return;
+
+                if (!nodeData.revealed) {
+                    nodeData.revealed = true;
+                    nodeData.timeLeft = 5;
+
+                    el.innerHTML = `
+                        <div class="timer-badge" id="timer-${r}-${c}">5s</div>
+                        <div class="node-word">${nodeData.word}</div>
+                        <button class="check-btn" onclick="markNodeChecked(event, ${r}, ${c})">✓ Check</button>
+                    `;
+
+                    // Start 5-second countdown
+                    nodeData.timer = setInterval(() => {
+                        nodeData.timeLeft -= 1;
+                        const timerBadge = document.getElementById(`timer-${r}-${c}`);
+                        
+                        if (timerBadge) {
+                            timerBadge.textContent = `${nodeData.timeLeft}s`;
+                        }
+
+                        // If time expires without checking
+                        if (nodeData.timeLeft <= 0) {
+                            clearInterval(nodeData.timer);
+                            if (!nodeData.checked) {
+                                markNodeWrong(r, c);
+                            }
+                        }
+                    }, 1000);
                 }
-                layer.appendChild(ufo);
-            });
+            }
+
+            // User clicked "✓ Check" within 5s
+            function markNodeChecked(event, r, c) {
+                event.stopPropagation(); // Prevents clicking parent node again
+                
+                const nodeData = state.board[r][c];
+                const el = document.getElementById(`node-${r}-${c}`);
+                if (!nodeData || nodeData.checked || nodeData.isWrong) return;
+
+                clearInterval(nodeData.timer);
+                nodeData.checked = true;
+
+                el.innerHTML = `<div class="node-word">${nodeData.word}</div><div style="color:#4dff4d; font-weight:bold;">✓</div>`;
+                
+                // Call node claiming logic if you have one
+                if (typeof claimNode === 'function') {
+                    claimNode(r, c);
+                }
+            }
+
+            // Triggered when 5s timer expires without checking
+            function markNodeWrong(r, c) {
+                const nodeData = state.board[r][c];
+                const el = document.getElementById(`node-${r}-${c}`);
+                if (!nodeData) return;
+
+                nodeData.isWrong = true;
+                el.classList.add('wrong');
+                el.innerHTML = `
+                    <div class="node-word" style="text-decoration: line-through;">${nodeData.word}</div>
+                    <div class="status-wrong">✕ Wrong</div>
+                `;
+            }
         }
-
-        function positionUFOs(winTargetTeamId = null) {
-            state.teams.forEach(team => {
-                if (!team.active) return;
-                const ufo = document.getElementById(`ufo-${team.id}`);
-                if (!ufo) return;
-
-                let targetEl;
+    }
+            function createUFOs() {
+                const layer = document.getElementById('ufoLayer');
+                layer.innerHTML = '';
                 
-                if (winTargetTeamId === team.id) {
-                    targetEl = document.getElementById('finalPlanet');
-                } else if (team.col === -1) {
-                    targetEl = document.getElementById(`start-${team.row}`);
-                } else {
-                    targetEl = document.getElementById(`node-${team.row}-${team.col}`);
-                }
+                state.teams.forEach(team => {
+                    if (!team.active) return;
+                    const ufo = document.createElement('div');
+                    ufo.className = `ufo ${teamGlowClasses[team.id]}`;
+                    ufo.id = `ufo-${team.id}`;
+                    
+                    if (team.icon) {
+                        ufo.innerHTML = `<img src="${team.icon}" alt="${team.name}">`;
+                    } else {
+                        ufo.innerHTML = getSVGIcon(team.color);
+                    }
+                    layer.appendChild(ufo);
+                });
+            }
 
-                if (targetEl) {
-                    const rect = targetEl.getBoundingClientRect();
-                    const containerRect = document.getElementById('gameBoard').getBoundingClientRect();
+            function positionUFOs(winTargetTeamId = null) {
+                state.teams.forEach(team => {
+                    if (!team.active) return;
+                    const ufo = document.getElementById(`ufo-${team.id}`);
+                    if (!ufo) return;
+
+                    let targetEl;
                     
-                    // Calculate center position relative to gameBoard container
-                    const centerX = rect.left - containerRect.left + rect.width / 2;
-                    const centerY = rect.top - containerRect.top + rect.height / 2;
+                    if (winTargetTeamId === team.id) {
+                        targetEl = document.getElementById('finalPlanet');
+                    } else if (team.col === -1) {
+                        targetEl = document.getElementById(`start-${team.row}`);
+                    } else {
+                        targetEl = document.getElementById(`node-${team.row}-${team.col}`);
+                    }
+
+                    if (targetEl) {
+                        const rect = targetEl.getBoundingClientRect();
+                        const containerRect = document.getElementById('gameBoard').getBoundingClientRect();
+                        
+                        // Calculate center position relative to gameBoard container
+                        const centerX = rect.left - containerRect.left + rect.width / 2;
+                        const centerY = rect.top - containerRect.top + rect.height / 2;
+                        
+                        ufo.style.left = `${centerX}px`;
+                        ufo.style.top = `${centerY}px`;
+                    }
                     
-                    ufo.style.left = `${centerX}px`;
-                    ufo.style.top = `${centerY}px`;
-                }
-                
-                // Toggle active indicator
-                const currentTurnTeamId = state.turnOrder[state.currentTurnIndex];
-                if (team.id === currentTurnTeamId && !state.isGameOver) {
-                    ufo.classList.add('active-turn-indicator');
-                } else {
-                    ufo.classList.remove('active-turn-indicator');
-                }
-            });
-        }
+                    // Toggle active indicator
+                    const currentTurnTeamId = state.turnOrder[state.currentTurnIndex];
+                    if (team.id === currentTurnTeamId && !state.isGameOver) {
+                        ufo.classList.add('active-turn-indicator');
+                    } else {
+                        ufo.classList.remove('active-turn-indicator');
+                    }
+                });
+            }
 
         function updateTurnDisplay() {
             const currentTeamId = state.turnOrder[state.currentTurnIndex];
@@ -879,6 +1033,9 @@
             }
         }
 
+let challengeTimer = null;
+        let challengeTimeLeft = 5;
+
         function handleNodeClick(r, c) {
             if (state.isGameOver) return;
             
@@ -896,12 +1053,30 @@
             
             activeChallenge = { team: team, r: r, c: c, el: nodeEl };
             
-            // Show Modal
+            // Set word in Big text & reset timer to 5s
             document.getElementById('challengeWord').innerText = nodeData.word;
+            challengeTimeLeft = 5;
+            document.getElementById('modalTimer').innerText = `⏱️ ${challengeTimeLeft}s`;
             document.getElementById('challengeModal').classList.remove('hidden');
+
+            // Start 5-second countdown timer
+            clearInterval(challengeTimer);
+            challengeTimer = setInterval(() => {
+                challengeTimeLeft--;
+                const timerEl = document.getElementById('modalTimer');
+                if (timerEl) timerEl.innerText = `⏱️ ${challengeTimeLeft}s`;
+
+                // If timer expires without clicking check -> WRONG
+                if (challengeTimeLeft <= 0) {
+                    clearInterval(challengeTimer);
+                    resolveChallenge(false);
+                }
+            }, 1000);
         }
 
         function resolveChallenge(success) {
+            // Stop the 5s timer immediately
+            clearInterval(challengeTimer);
             document.getElementById('challengeModal').classList.add('hidden');
             
             if (success) {
@@ -913,11 +1088,13 @@
                 t.col = activeChallenge.c;
                 state.board[t.row][t.col].owner = t.id;
                 
-                // Update Visuals
-                activeChallenge.el.classList.add(`claimed-${t.id}`);
+                // Update Node Visuals on Board (show word inside claimed color)
+                activeChallenge.el.classList.add(`claimed-${t.id + 1}`);
+                activeChallenge.el.innerHTML = `<span class="node-word font-bold text-xl">${state.board[t.row][t.col].word}</span>`;
+                
                 positionUFOs();
                 
-                // Check Win condition (Reached column index 7, which is the 8th node)
+                // Check Win condition
                 if (t.col === 7) {
                     triggerVictory(t);
                     return;
@@ -925,6 +1102,13 @@
             } else {
                 playBuzz();
             }
+            
+            // Advance to next team's turn
+            activeChallenge = null;
+            state.currentTurnIndex = (state.currentTurnIndex + 1) % state.turnOrder.length;
+            updateTurnDisplay();
+            updateValidMoves();
+        }
             
             // Next Turn
             activeChallenge = null;
