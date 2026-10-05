@@ -134,14 +134,13 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             padding: 10px;
-            font-size: 1.1rem;
-            word-wrap: break-word;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .game-node .node-word {
+        .game-node .node-number {
             pointer-events: none;
-            text-shadow: 1px 1px 3px #000;
+            text-shadow: 2px 2px 4px #000;
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .game-node.claimed-0 { border-style: solid; border-color: var(--team1-color); box-shadow: 0 0 20px var(--team1-color), inset 0 0 20px rgba(255, 77, 77, 0.5); background: rgba(255, 77, 77, 0.1); color: #fff;}
@@ -158,6 +157,10 @@
         .game-node.valid-move:hover {
             transform: scale(1.1);
             background: rgba(255,255,255,0.2);
+        }
+        .game-node.valid-move .node-number {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
         }
 
         @keyframes pulseValidMove {
@@ -241,73 +244,7 @@
             0%, 100% { transform: translateY(0) scale(1.1); }
             50% { transform: translateY(-10px) scale(1.1); }
         }
-            /* Node Number & Word Reveal Display */
-        .game-node {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            user-select: none;
-        }
 
-        .node-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .node-word {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-
-        .timer-badge {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            background: #ff4d4d;
-            color: #fff;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: bold;
-            box-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
-            animation: pulse 1s infinite alternate;
-        }
-
-        .check-btn {
-            background: #4dff4d;
-            color: #000;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(77, 255, 77, 0.6);
-        }
-
-        .check-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Wrong State Formatting */
-        .game-node.wrong {
-            border: 2px solid #ff4d4d !important;
-            background: rgba(255, 77, 77, 0.25) !important;
-            box-shadow: 0 0 15px #ff4d4d !important;
-            color: #ff4d4d;
-        }
-
-        .status-wrong {
-            color: #ff4d4d;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
     </style>
 </head>
 <body>
@@ -320,7 +257,7 @@
     <div id="app" class="relative w-full h-screen flex flex-col">
         
         <!-- Header (Game Mode Only) -->
-        <div id="gameHeader" class="hidden w-full h-20 flex-shrink-0 flex items-center justify-between px-8 bg-black bg-opacity-40 border-b border-white border-opacity-10 shadow-lg">
+        <div id="gameHeader" class="hidden w-full h-20 flex-shrink-0 flex items-center justify-between px-8 bg-black bg-opacity-40 border-b border-white border-opacity-10 shadow-lg z-10">
             <h1 class="text-3xl font-bold text-yellow-300 drop-shadow-md">🚀 Star Walker</h1>
             <div id="turnDisplay" class="text-2xl font-bold px-6 py-2 rounded-full border-2 bg-opacity-30 flex items-center gap-3 transition-colors duration-300">
                 Current Turn: <span id="currentTeamName">Team 1</span>
@@ -328,7 +265,7 @@
             <div class="flex gap-4">
                 <button onclick="shuffleBoard()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Shuffle
+                    Shuffle Words
                 </button>
                 <button onclick="toggleFullScreen()" id="gameFsBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
@@ -353,7 +290,7 @@
                 
                 <div class="flex justify-between items-center flex-shrink-0">
                     <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-500">
-                        🚀 Star Walker Game Dashboard
+                        🚀 Star Walker Dashboard
                     </h1>
                     <div class="flex gap-4">
                         <button onclick="toggleFullScreen()" id="dashFsBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold shadow transition flex items-center gap-2">
@@ -418,35 +355,65 @@
                 </div>
 
                 <div class="flex justify-center flex-shrink-0 mt-2">
-                    <button onclick="startGame()" class="px-12 py-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black rounded-full font-bold text-2xl shadow-[0_0_20px_rgba(74,222,128,0.5)] transition-transform hover:scale-105 active:scale-95">
+                    <button onclick="prepareGame()" class="px-12 py-3 bg-gradient-to-r from-green-400 to-green-600 hover:from-green-300 hover:to-green-500 text-black rounded-full font-bold text-2xl shadow-[0_0_20px_rgba(74,222,128,0.5)] transition-transform hover:scale-105 active:scale-95">
                         START GAME
                     </button>
                 </div>
             </div>
         </div>
 
-       <!-- CHALLENGE MODAL -->
+        <!-- INSTRUCTION MODAL -->
+        <div id="instructionModal" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 backdrop-blur-md">
+            <div class="glass-panel p-8 max-w-4xl w-full text-center shadow-2xl animate-[zoomIn_0.3s_ease-out]">
+                <h2 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500 mb-6 drop-shadow-lg">
+                    🚀 How to Play / 遊戲規則 🛸
+                </h2>
+                
+                <div class="space-y-6 text-left text-lg md:text-xl text-white bg-black bg-opacity-40 p-6 md:p-8 rounded-xl border border-white border-opacity-10 shadow-inner">
+                    <div>
+                        <h3 class="text-3xl font-bold text-blue-400 mb-2 border-b border-blue-900 pb-2">English:</h3>
+                        <p class="leading-relaxed">Teams take turns moving across the galaxy. On your turn, choose a path number <strong>(1, 2, 3, or 4)</strong> in the next column. When the hidden vocabulary word appears, say it out loud correctly to claim the space and move your UFO. The first team to reach the Finish Planet wins!</p>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold text-green-400 mb-2 mt-4 border-b border-green-900 pb-2">中文:</h3>
+                        <p class="leading-relaxed">各隊輪流穿越銀河系。輪到你的回合時，在下一排中選擇一個路線號碼 <strong>(1、2、3 或 4)</strong>。當隱藏的單字出現時，正確並大聲唸出單字即可佔領該位置並移動你的幽浮。最先抵達終點星球的隊伍獲勝！</p>
+                    </div>
+                </div>
+    
+                <button onclick="launchGame()" class="mt-8 px-12 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white rounded-full font-bold text-3xl shadow-[0_0_25px_rgba(79,70,229,0.7)] transition-transform hover:scale-105 active:scale-95">
+                    LET'S GO! / 開始！
+                </button>
+            </div>
+        </div>
+
+        <!-- CHALLENGE MODAL (Massive Font Update) -->
         <div id="challengeModal" class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 backdrop-blur-sm">
-            <div class="glass-panel p-10 max-w-2xl w-full text-center animate-[bounceIn_0.5s_ease-out]">
-                <!-- 5 Second Timer Display -->
-                <div id="modalTimer" class="text-4xl font-bold text-yellow-300 mb-2 animate-pulse">⏱️ 5s</div>
+            <div class="glass-panel p-10 max-w-5xl w-full text-center animate-[bounceIn_0.5s_ease-out] shadow-2xl">
+                <h3 class="text-3xl font-bold text-gray-300 mb-2 tracking-widest uppercase">Vocabulary Challenge</h3>
                 
-                <h3 class="text-xl font-bold text-gray-300 mb-2 tracking-widest uppercase">Vocabulary Challenge</h3>
-                
-                <!-- Big Vocabulary Word -->
-                <div id="challengeWord" class="text-6xl font-bold text-white mb-10 mt-4 drop-shadow-lg break-words">
+                <!-- Updated Font Size to be MASSIVE -->
+                <div id="challengeWord" class="text-7xl md:text-[8rem] lg:text-[10rem] font-bold text-white mb-16 mt-8 drop-shadow-2xl break-words px-4 leading-none">
                     Word Here
                 </div>
-                
-                <div class="flex justify-center gap-8">
-                    <!-- Wrong / Fail Button -->
-                    <button onclick="resolveChallenge(false)" class="w-20 h-20 rounded-full bg-red-500 hover:bg-red-400 border-4 border-red-700 flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.5)] transition-transform hover:scale-110 active:scale-95">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
+
+                <div class="flex justify-center gap-12">
+                    <button onclick="resolveChallenge(false)" class="w-28 h-28 rounded-full bg-red-500 hover:bg-red-400 border-4 border-red-700 flex items-center justify-center shadow-[0_0_25px_rgba(239,68,68,0.6)] transition-transform hover:scale-110 active:scale-95">
+                        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
-                    <!-- Check / Correct Button -->
-                    <button onclick="resolveChallenge(true)" class="w-20 h-20 rounded-full bg-green-500 hover:bg-green-400 border-4 border-green-700 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.5)] transition-transform hover:scale-110 active:scale-95">
-                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                    <button onclick="resolveChallenge(true)" class="w-28 h-28 rounded-full bg-green-500 hover:bg-green-400 border-4 border-green-700 flex items-center justify-center shadow-[0_0_25px_rgba(34,197,94,0.6)] transition-transform hover:scale-110 active:scale-95">
+                        <svg class="w-14 h-14 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
                     </button>
+                </div>
+
+                <!-- 5 Second Timer UI -->
+                <div class="mt-12 flex flex-col items-center">
+                    <div class="w-full max-w-2xl bg-gray-900 rounded-full h-4 mb-3 overflow-hidden border border-gray-600 shadow-inner">
+                        <div id="challengeTimerFill" class="bg-gradient-to-r from-red-600 to-red-400 h-full w-full" style="transition: width 1s linear;"></div>
+                    </div>
+                    <div class="text-4xl font-bold text-red-400 drop-shadow-md flex items-center gap-2">
+                        <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span id="challengeTimerText">5</span>s
+                    </div>
                 </div>
             </div>
         </div>
@@ -515,10 +482,10 @@
         // --- GAME STATE ---
         const DEFAULT_VOCAB = ["Galaxy", "Asteroid", "Comet", "Nebula", "Orbit", "Gravity", "Eclipse", "Meteor", "Planet", "Star", "Vacuum", "Cosmos", "Lunar", "Solar", "Rocket", "Satellite"];
         
-       const teamColors = ["#ff4d4d", "#4dff4d", "#fe7621", "#4da6ff"];
+        const teamColors = ["#ff4d4d", "#4dff4d", "#fe7621", "#4da6ff"];
         const teamGlowClasses = ["ufo-glow-0", "ufo-glow-1", "ufo-glow-2", "ufo-glow-3"];
         
-       let state = {
+        let state = {
             numTeams: 4,
             teams: [
                 { id: 0, name: "Team\nRed", color: teamColors[0], active: true, col: -1, row: 0, icon: null },
@@ -534,7 +501,9 @@
         };
 
         let activeChallenge = null; // { row, col, nodeElement }
+        let challengeTimer = null; // 5-second timer reference
         
+        // --- STREAMING_CHUNK:Dashboard Setup and Interaction Handlers... ---
         // --- SETUP DASHBOARD LOGIC ---
         
         function initDashboard() {
@@ -573,14 +542,14 @@
                 div.style.borderLeftColor = team.color;
                 
                 div.innerHTML = `
-                    <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-500">
+                    <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center overflow-hidden border border-gray-500 flex-shrink-0">
                         ${team.icon ? `<img src="${team.icon}" class="w-full h-full object-cover">` : getSVGIcon(team.color)}
                     </div>
                     <div class="flex-grow">
-                        <input type="text" value="${team.name}" onchange="updateTeamName(${i}, this.value)" class="bg-transparent border-b border-gray-500 text-white outline-none w-full max-w-[200px] font-bold">
+                        <input type="text" value="${team.name.replace(/\n/g, ' ')}" onchange="updateTeamName(${i}, this.value)" class="bg-transparent border-b border-gray-500 text-white outline-none w-full max-w-[200px] font-bold">
                     </div>
                     <div>
-                        <label class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs cursor-pointer transition">
+                        <label class="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs cursor-pointer transition whitespace-nowrap">
                             Upload UFO
                             <input type="file" accept="image/*" class="hidden" onchange="handleIconUpload(event, ${i})">
                         </label>
@@ -591,7 +560,7 @@
         }
 
         function updateTeamName(index, newName) {
-            state.teams[index].name = newName;
+            state.teams[index].name = newName.replace(/ /g, '\n'); // Maintain stack layout if desired
             renderTurnOrderUI();
         }
 
@@ -624,7 +593,7 @@
                 btnLeft.disabled = index === 0;
 
                 const nameSpan = document.createElement('span');
-                nameSpan.className = "px-4 font-bold min-w-[100px] text-center";
+                nameSpan.className = "px-4 font-bold min-w-[100px] text-center whitespace-pre-line leading-tight";
                 nameSpan.innerText = team.name;
 
                 const btnRight = document.createElement('button');
@@ -648,19 +617,20 @@
         }
 
         function moveTurnOrder(index, direction) {
-            const newIndex = index + direction;
-            if (newIndex < 0 || newIndex >= state.turnOrder.length) return;
+            const targetIndex = index + direction;
+            if (targetIndex < 0 || targetIndex >= state.turnOrder.length) return;
             
+            // Swap turn positions
             const temp = state.turnOrder[index];
-            state.turnOrder[index] = state.turnOrder[newIndex];
-            state.turnOrder[newIndex] = temp;
+            state.turnOrder[index] = state.turnOrder[targetIndex];
+            state.turnOrder[targetIndex] = temp;
             
             renderTurnOrderUI();
         }
 
+        // --- STREAMING_CHUNK:Import/Export and UI Toggles... ---
         // --- IMPORT / EXPORT ---
         function exportGame() {
-            // Update vocab before save
             parseVocab();
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
             const downloadAnchorNode = document.createElement('a');
@@ -690,7 +660,6 @@
             reader.readAsText(file);
         }
 
-        // --- VOCAB EXPORT / IMPORT ---
         function exportVocab() {
             const vocabText = document.getElementById('vocabInput').value;
             const blob = new Blob([vocabText], { type: 'text/plain' });
@@ -724,7 +693,6 @@
             }
         }
 
-        // Update Full Screen Button text based on state
         document.addEventListener('fullscreenchange', () => {
             const isFs = !!document.fullscreenElement;
             const text = isFs ? 'Exit Full Screen' : 'Full Screen';
@@ -734,6 +702,7 @@
             if (gameBtn) gameBtn.innerText = text;
         });
 
+        // --- STREAMING_CHUNK:Core Game Flow and Board Generation... ---
         // --- GAME LOGIC ---
 
         function parseVocab() {
@@ -743,7 +712,8 @@
             state.vocab = words;
         }
 
-        function startGame() {
+        // STEP 1: Prep the game and show instructions
+        function prepareGame() {
             parseVocab();
             
             // Reset gameplay state
@@ -751,10 +721,19 @@
             state.currentTurnIndex = 0;
             state.teams.forEach((t, i) => {
                 t.col = -1;
-                t.row = i; // Initial rows 0-3 corresponding to start zones
+                t.row = i; // Initial rows correspond to start zones
             });
 
             generateBoardData();
+            
+            // Show Instruction Modal before launching
+            document.getElementById('instructionModal').classList.remove('hidden');
+        }
+
+        // STEP 2: Start playing after reading instructions
+        function launchGame() {
+            document.getElementById('instructionModal').classList.add('hidden');
+            
             renderBoardUI();
             
             document.getElementById('setupDashboard').classList.add('hidden');
@@ -771,7 +750,6 @@
                 positionUFOs();
             }, 50);
             
-            // Listen to resize to adjust UFO positions
             window.addEventListener('resize', positionUFOs);
         }
 
@@ -794,7 +772,7 @@
         function shuffleBoard() {
             if (state.isGameOver) return;
             
-            // Gather all current words from the board
+            // Gather all current words from the board data
             let wordsOnBoard = [];
             for (let r = 0; r < 4; r++) {
                 for (let c = 0; c < 8; c++) {
@@ -802,25 +780,30 @@
                 }
             }
             
-            // Shuffle the array of words (Fisher-Yates)
+            // Shuffle the array of words
             for (let i = wordsOnBoard.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [wordsOnBoard[i], wordsOnBoard[j]] = [wordsOnBoard[j], wordsOnBoard[i]];
             }
             
-            // Re-apply to board state and update DOM (keeps ownership intact!)
+            // Re-apply to board state. 
+            // Note: We don't update the DOM text because the DOM just shows the node number (1-4).
             let wordIndex = 0;
             for (let r = 0; r < 4; r++) {
                 for (let c = 0; c < 8; c++) {
                     state.board[r][c].word = wordsOnBoard[wordIndex];
-                    const nodeWordEl = document.querySelector(`#node-${r}-${c} .node-word`);
-                    if (nodeWordEl) nodeWordEl.innerText = wordsOnBoard[wordIndex];
                     wordIndex++;
                 }
             }
+            
+            // Visual feedback of shuffle (quick flash effect)
+            const grid = document.getElementById('boardGrid');
+            grid.style.opacity = '0.5';
+            setTimeout(() => grid.style.opacity = '1', 200);
         }
 
-function renderBoardUI() {
+        // --- STREAMING_CHUNK:Rendering UI Elements and UFO Animation Logic... ---
+        function renderBoardUI() {
             const grid = document.getElementById('boardGrid');
             grid.innerHTML = '';
             
@@ -846,21 +829,13 @@ function renderBoardUI() {
                     node.className = "game-node";
                     node.id = `node-${r}-${c}`;
                     
-                    // Displays numbers 1, 2, 3, 4 per column
-                    const nodeNumber = r + 1;
-
-                    if (nodeData.owner !== null) {
-                        node.classList.add(`claimed-${nodeData.owner + 1}`);
-                        node.innerHTML = `<span class="node-word font-bold text-xl">${nodeData.word}</span>`;
-                    } else {
-                        node.innerHTML = `<span class="text-3xl font-bold text-white">${nodeNumber}</span>`;
-                    }
-
+                    // NEW: Display Number 1-4 based on row instead of the word
+                    node.innerHTML = `<span class="node-number font-bold text-5xl md:text-6xl">${r + 1}</span>`;
                     node.onclick = () => handleNodeClick(r, c);
                     grid.appendChild(node);
                 }
 
-                // 3. Final Planet Area
+                // 3. Final Planet Area 
                 if (r === 0) {
                     const planet = document.createElement('div');
                     planet.className = "final-planet-container text-2xl font-bold text-black text-center";
@@ -871,150 +846,78 @@ function renderBoardUI() {
             }
         }
 
-      // Handles clicking a node: reveals word + starts 5s timer
-            function handleNodeClick(r, c) {
-                const nodeData = state.board[r][c];
-                const el = document.getElementById(`node-${r}-${c}`);
+        function createUFOs() {
+            const layer = document.getElementById('ufoLayer');
+            layer.innerHTML = '';
+            
+            state.teams.forEach(team => {
+                if (!team.active) return;
+                const ufo = document.createElement('div');
+                ufo.className = `ufo ${teamGlowClasses[team.id]}`;
+                ufo.id = `ufo-${team.id}`;
                 
-                if (nodeData.checked || nodeData.isWrong) return;
-
-                if (!nodeData.revealed) {
-                    nodeData.revealed = true;
-                    nodeData.timeLeft = 5;
-
-                    el.innerHTML = `
-                        <div class="timer-badge" id="timer-${r}-${c}">5s</div>
-                        <div class="node-word">${nodeData.word}</div>
-                        <button class="check-btn" onclick="markNodeChecked(event, ${r}, ${c})">✓ Check</button>
-                    `;
-
-                    // Start 5-second countdown
-                    nodeData.timer = setInterval(() => {
-                        nodeData.timeLeft -= 1;
-                        const timerBadge = document.getElementById(`timer-${r}-${c}`);
-                        
-                        if (timerBadge) {
-                            timerBadge.textContent = `${nodeData.timeLeft}s`;
-                        }
-
-                        // If time expires without checking
-                        if (nodeData.timeLeft <= 0) {
-                            clearInterval(nodeData.timer);
-                            if (!nodeData.checked) {
-                                markNodeWrong(r, c);
-                            }
-                        }
-                    }, 1000);
+                if (team.icon) {
+                    ufo.innerHTML = `<img src="${team.icon}" alt="${team.name.replace(/\n/g, ' ')}">`;
+                } else {
+                    ufo.innerHTML = getSVGIcon(team.color);
                 }
-            }
-
-            // User clicked "✓ Check" within 5s
-            function markNodeChecked(event, r, c) {
-                event.stopPropagation(); // Prevents clicking parent node again
-                
-                const nodeData = state.board[r][c];
-                const el = document.getElementById(`node-${r}-${c}`);
-                if (!nodeData || nodeData.checked || nodeData.isWrong) return;
-
-                clearInterval(nodeData.timer);
-                nodeData.checked = true;
-
-                el.innerHTML = `<div class="node-word">${nodeData.word}</div><div style="color:#4dff4d; font-weight:bold;">✓</div>`;
-                
-                // Call node claiming logic if you have one
-                if (typeof claimNode === 'function') {
-                    claimNode(r, c);
-                }
-            }
-
-            // Triggered when 5s timer expires without checking
-            function markNodeWrong(r, c) {
-                const nodeData = state.board[r][c];
-                const el = document.getElementById(`node-${r}-${c}`);
-                if (!nodeData) return;
-
-                nodeData.isWrong = true;
-                el.classList.add('wrong');
-                el.innerHTML = `
-                    <div class="node-word" style="text-decoration: line-through;">${nodeData.word}</div>
-                    <div class="status-wrong">✕ Wrong</div>
-                `;
-            }
+                layer.appendChild(ufo);
+            });
         }
-    }
-            function createUFOs() {
-                const layer = document.getElementById('ufoLayer');
-                layer.innerHTML = '';
+
+        function positionUFOs(winTargetTeamId = null) {
+            state.teams.forEach(team => {
+                if (!team.active) return;
+                const ufo = document.getElementById(`ufo-${team.id}`);
+                if (!ufo) return;
+
+                let targetEl;
                 
-                state.teams.forEach(team => {
-                    if (!team.active) return;
-                    const ufo = document.createElement('div');
-                    ufo.className = `ufo ${teamGlowClasses[team.id]}`;
-                    ufo.id = `ufo-${team.id}`;
+                if (winTargetTeamId === team.id) {
+                    targetEl = document.getElementById('finalPlanet');
+                } else if (team.col === -1) {
+                    targetEl = document.getElementById(`start-${team.row}`);
+                } else {
+                    targetEl = document.getElementById(`node-${team.row}-${team.col}`);
+                }
+
+                if (targetEl) {
+                    const rect = targetEl.getBoundingClientRect();
+                    const containerRect = document.getElementById('gameBoard').getBoundingClientRect();
                     
-                    if (team.icon) {
-                        ufo.innerHTML = `<img src="${team.icon}" alt="${team.name}">`;
-                    } else {
-                        ufo.innerHTML = getSVGIcon(team.color);
-                    }
-                    layer.appendChild(ufo);
-                });
-            }
-
-            function positionUFOs(winTargetTeamId = null) {
-                state.teams.forEach(team => {
-                    if (!team.active) return;
-                    const ufo = document.getElementById(`ufo-${team.id}`);
-                    if (!ufo) return;
-
-                    let targetEl;
+                    const centerX = rect.left - containerRect.left + rect.width / 2;
+                    const centerY = rect.top - containerRect.top + rect.height / 2;
                     
-                    if (winTargetTeamId === team.id) {
-                        targetEl = document.getElementById('finalPlanet');
-                    } else if (team.col === -1) {
-                        targetEl = document.getElementById(`start-${team.row}`);
-                    } else {
-                        targetEl = document.getElementById(`node-${team.row}-${team.col}`);
-                    }
+                    ufo.style.left = `${centerX}px`;
+                    ufo.style.top = `${centerY}px`;
+                }
+                
+                // Toggle active indicator
+                const currentTurnTeamId = state.turnOrder[state.currentTurnIndex];
+                if (team.id === currentTurnTeamId && !state.isGameOver) {
+                    ufo.classList.add('active-turn-indicator');
+                } else {
+                    ufo.classList.remove('active-turn-indicator');
+                }
+            });
+        }
 
-                    if (targetEl) {
-                        const rect = targetEl.getBoundingClientRect();
-                        const containerRect = document.getElementById('gameBoard').getBoundingClientRect();
-                        
-                        // Calculate center position relative to gameBoard container
-                        const centerX = rect.left - containerRect.left + rect.width / 2;
-                        const centerY = rect.top - containerRect.top + rect.height / 2;
-                        
-                        ufo.style.left = `${centerX}px`;
-                        ufo.style.top = `${centerY}px`;
-                    }
-                    
-                    // Toggle active indicator
-                    const currentTurnTeamId = state.turnOrder[state.currentTurnIndex];
-                    if (team.id === currentTurnTeamId && !state.isGameOver) {
-                        ufo.classList.add('active-turn-indicator');
-                    } else {
-                        ufo.classList.remove('active-turn-indicator');
-                    }
-                });
-            }
-
+        // --- STREAMING_CHUNK:Interaction and Win Condition logic... ---
         function updateTurnDisplay() {
             const currentTeamId = state.turnOrder[state.currentTurnIndex];
             const team = state.teams[currentTeamId];
             const display = document.getElementById('turnDisplay');
             const nameEl = document.getElementById('currentTeamName');
             
-            nameEl.innerText = team.name;
+            nameEl.innerText = team.name.replace(/\n/g, ' ');
             display.style.borderColor = team.color;
-            display.style.backgroundColor = `${team.color}20`; // 20% opacity hex equivalent approx
+            display.style.backgroundColor = `${team.color}20`; 
             display.style.color = team.color;
             
             positionUFOs(); // Refresh to update active bobbing animation
         }
 
         function updateValidMoves() {
-            // Remove all valid-move classes
             document.querySelectorAll('.game-node').forEach(n => n.classList.remove('valid-move'));
             
             if (state.isGameOver) return;
@@ -1023,7 +926,7 @@ function renderBoardUI() {
             const team = state.teams[currentTeamId];
             const targetCol = team.col + 1;
             
-            if (targetCol >= 8) return; // shouldn't happen unless won
+            if (targetCol >= 8) return;
 
             // Add valid-move class to all unclaimed nodes in targetCol
             for (let r = 0; r < 4; r++) {
@@ -1033,19 +936,14 @@ function renderBoardUI() {
             }
         }
 
-let challengeTimer = null;
-        let challengeTimeLeft = 5;
-
         function handleNodeClick(r, c) {
             if (state.isGameOver) return;
             
             const currentTeamId = state.turnOrder[state.currentTurnIndex];
             const team = state.teams[currentTeamId];
             
-            // Validate move (must be exactly one column right)
+            // Validate move
             if (c !== team.col + 1) return;
-            
-            // Validate move (node must be unclaimed)
             if (state.board[r][c].owner !== null) return;
             
             const nodeData = state.board[r][c];
@@ -1053,30 +951,42 @@ let challengeTimer = null;
             
             activeChallenge = { team: team, r: r, c: c, el: nodeEl };
             
-            // Set word in Big text & reset timer to 5s
+            // Show Modal with massive text
             document.getElementById('challengeWord').innerText = nodeData.word;
-            challengeTimeLeft = 5;
-            document.getElementById('modalTimer').innerText = `⏱️ ${challengeTimeLeft}s`;
             document.getElementById('challengeModal').classList.remove('hidden');
 
-            // Start 5-second countdown timer
-            clearInterval(challengeTimer);
+            // Start 5-second timer
+            let timeLeft = 5;
+            document.getElementById('challengeTimerText').innerText = timeLeft;
+            const timerFill = document.getElementById('challengeTimerFill');
+            
+            // Snap to 100% without transition
+            timerFill.style.transition = 'none';
+            timerFill.style.width = '100%';
+            void timerFill.offsetWidth; // Force reflow
+            
+            // Start shrinking
+            timerFill.style.transition = 'width 1s linear';
+            
             challengeTimer = setInterval(() => {
-                challengeTimeLeft--;
-                const timerEl = document.getElementById('modalTimer');
-                if (timerEl) timerEl.innerText = `⏱️ ${challengeTimeLeft}s`;
-
-                // If timer expires without clicking check -> WRONG
-                if (challengeTimeLeft <= 0) {
+                timeLeft--;
+                document.getElementById('challengeTimerText').innerText = timeLeft;
+                timerFill.style.width = `${(timeLeft / 5) * 100}%`;
+                
+                if (timeLeft <= 0) {
                     clearInterval(challengeTimer);
-                    resolveChallenge(false);
+                    resolveChallenge(false); // Automatic fail
                 }
             }, 1000);
         }
 
         function resolveChallenge(success) {
-            // Stop the 5s timer immediately
-            clearInterval(challengeTimer);
+            // Clear the timer
+            if (challengeTimer) {
+                clearInterval(challengeTimer);
+                challengeTimer = null;
+            }
+
             document.getElementById('challengeModal').classList.add('hidden');
             
             if (success) {
@@ -1088,10 +998,8 @@ let challengeTimer = null;
                 t.col = activeChallenge.c;
                 state.board[t.row][t.col].owner = t.id;
                 
-                // Update Node Visuals on Board (show word inside claimed color)
-                activeChallenge.el.classList.add(`claimed-${t.id + 1}`);
-                activeChallenge.el.innerHTML = `<span class="node-word font-bold text-xl">${state.board[t.row][t.col].word}</span>`;
-                
+                // Update Visuals
+                activeChallenge.el.classList.add(`claimed-${t.id}`);
                 positionUFOs();
                 
                 // Check Win condition
@@ -1103,13 +1011,6 @@ let challengeTimer = null;
                 playBuzz();
             }
             
-            // Advance to next team's turn
-            activeChallenge = null;
-            state.currentTurnIndex = (state.currentTurnIndex + 1) % state.turnOrder.length;
-            updateTurnDisplay();
-            updateValidMoves();
-        }
-            
             // Next Turn
             activeChallenge = null;
             state.currentTurnIndex = (state.currentTurnIndex + 1) % state.turnOrder.length;
@@ -1119,16 +1020,14 @@ let challengeTimer = null;
 
         function triggerVictory(winningTeam) {
             state.isGameOver = true;
-            updateValidMoves(); // Clears highlights
+            updateValidMoves(); 
             
-            // Wait for movement to final node to finish, then fly to planet
             setTimeout(() => {
-                positionUFOs(winningTeam.id); // special parameter triggers flight to planet
+                positionUFOs(winningTeam.id); 
                 playFanfare();
                 
-                // Show victory modal after reaching planet
                 setTimeout(() => {
-                    document.getElementById('victoryTeamName').innerText = `${winningTeam.name} Wins!`;
+                    document.getElementById('victoryTeamName').innerText = `${winningTeam.name.replace(/\n/g, ' ')} Wins!`;
                     document.getElementById('victoryTeamName').style.color = winningTeam.color;
                     document.getElementById('victoryModal').classList.remove('hidden');
                 }, 1000);
@@ -1143,12 +1042,10 @@ let challengeTimer = null;
             document.getElementById('gameBoard').classList.remove('flex');
             document.getElementById('setupDashboard').classList.remove('hidden');
             
-            // Cleanup DOM
             document.getElementById('boardGrid').innerHTML = '';
             document.getElementById('ufoLayer').innerHTML = '';
         }
 
-        // --- UTILS ---
         function getSVGIcon(color) {
             return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <ellipse cx="50" cy="65" rx="45" ry="15" fill="${color}" opacity="0.8"/>
